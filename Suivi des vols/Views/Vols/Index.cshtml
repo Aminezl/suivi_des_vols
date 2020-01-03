@@ -1,0 +1,43 @@
+﻿@model IEnumerable<Suivi_des_vols.Models.Vols>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "La liste des vols";
+}
+
+<section class="panel">
+    <header class="panel-heading">
+        <div style="text-align:right">
+            <a href="/vols/Create" class="btn btn-primary">Nouveau Vol</a>
+        </div>
+
+        <h2 class="panel-title">Liste des vols </h2>
+    </header>
+    <div class="panel-body">
+        <table class="table table-bordered table-striped mb-none" id="datatable-default">
+            <thead>
+                <tr>
+                    <th>Aéroport de départ</th>
+                    <th>coordonnées de départ</th>
+                    <th>Aéroport de destination</th>
+                    <th>coordonnées de destination</th>
+                    <th>Distance</th>
+                    <th>Quantité de kérosène</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model)
+            {
+                <tr class="gradeX">
+                    <td>@Html.DisplayFor(modelItem => item.DepartAirport)</td>
+                    <td>@Html.DisplayFor(model => item.DepartLatAirport) - @Html.DisplayFor(model => item.DepartLogAirport)</td>
+                    <td>@Html.DisplayFor(model => item.DestinationAirport)</td>
+                    <td>@Html.DisplayFor(model => item.DestinationtLatAirport) - @Html.DisplayFor(model => item.DestinationLogAirport)</td>
+                    <td>@Html.DisplayFor(model => item.Distance)</td>
+                    <td>@Html.DisplayFor(model => item.QuantiteKerosene)</td>
+                </tr>
+             }
+            </tbody>
+        </table>
+    </div>
+</section>

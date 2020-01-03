@@ -1,0 +1,145 @@
+﻿@model Suivi_des_vols.Models.Vols
+
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Nouveau vol";
+}
+@using (Html.BeginForm())
+{
+
+@Html.AntiForgeryToken()
+
+@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+<div class="form-horizontal">
+    <section class="panel">
+        <header class="panel-heading">
+            <h2 class="panel-title">Nouveau Vol</h2>
+        </header>
+        <div class="panel-body">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Aéroport départ<span class="required">*</span></label>
+                <div class="col-sm-8">
+                    @Html.EditorFor(model => model.DepartAirport, new { htmlAttributes = new { @class = "form-control",@required="required",@placeholder= "Aéroport international de Dallas-Fort Worth" } })
+                    @Html.ValidationMessageFor(model => model.DepartAirport, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Coordonnées Aéroport départ<span class="required">*</span></label>
+                <div class="col-sm-4">
+                    @Html.EditorFor(model => model.DepartLatAirport, new { htmlAttributes = new { @class = "form-control", @required = "required", @readonly = "true" } })
+                </div>
+                <div class="col-sm-4">
+                    @Html.EditorFor(model => model.DepartLogAirport, new { htmlAttributes = new { @class = "form-control", @required = "required", @readonly = "true" } })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Aéroport destination<span class="required">*</span></label>
+                <div class="col-sm-8">
+                    @Html.EditorFor(model => model.DestinationAirport, new { htmlAttributes = new { @class = "form-control", @required = "required", @placeholder = "Aéroport international de Dallas-Fort Worth" } })
+                    @Html.ValidationMessageFor(model => model.DestinationAirport, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Coordonnées Aéroport destination <span class="required">*</span></label>
+                <div class="col-sm-4">
+                    @Html.EditorFor(model => model.DestinationtLatAirport, new { htmlAttributes = new { @class = "form-control", @required = "required", @readonly = "true" } })
+                </div>
+                <div class="col-sm-4">
+                    @Html.EditorFor(model => model.DestinationLogAirport, new { htmlAttributes = new { @class = "form-control", @required = "required", @readonly = "true" } })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Distance<span class="required">*</span></label>
+                <div class="col-sm-8">
+                    @Html.EditorFor(model => model.Distance, new { htmlAttributes = new { @class = "form-control", @required = "required", @readonly = "true" } })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Quantité de kérosène <span class="required">*</span></label>
+                <div class="col-sm-8">
+                    @Html.EditorFor(model => model.QuantiteKerosene, new { htmlAttributes = new { @class = "form-control", @required = "required", @readonly = "true" } })
+                </div>
+            </div>
+        </div>
+        <footer class="panel-footer">
+            <div class="row">
+                <div class="col-sm-9 col-sm-offset-3">
+                    <button class="btn btn-primary">Enregistrer</button>
+                    <a href="/vols" class="btn btn-default">Liste des vols</a>
+                </div>
+            </div>
+        </footer>
+    </section>
+</div>
+}
+
+<script>
+
+    window.onload = function () {
+        var autocomplete = new google.maps.places.Autocomplete(
+        (document.getElementById('DepartAirport')), { types: ['geocode'] });
+        var autocomplete = new google.maps.places.Autocomplete(
+        (document.getElementById('DestinationAirport')), { types: ['geocode'] });
+    };
+
+
+    function initMap() {
+        var geocoder = new google.maps.Geocoder;
+        $('#DepartAirport').focusout(function () {
+            console.log($(this).val());
+            geocoder.geocode({ 'address': $(this).val() }, function (results, status) {
+                if (status === google.maps.GeocoderStatus.OK) {
+                    $('#DepartLatAirport').val(results[0].geometry.location.lat());
+                    $('#DepartLogAirport').val(results[0].geometry.location.lng());
+                }
+            });
+        });
+        $('#DestinationAirport').focusout(function () {
+            var bounds = new google.maps.LatLngBounds;
+            var markersArray = [];
+            var origin2 = $('#DepartAirport').val();
+            var destinationA = $('#DestinationAirport').val();
+            
+
+            geocoder.geocode({ 'address': $(this).val() }, function (results, status) {
+                if (status === google.maps.GeocoderStatus.OK) {
+                    $('#DestinationtLatAirport').val(results[0].geometry.location.lat());
+                    $('#DestinationLogAirport').val(results[0].geometry.location.lng());
+                }
+            });
+
+            var service = new google.maps.DistanceMatrixService;
+            service.getDistanceMatrix({
+                origins: [origin2],
+                destinations: [destinationA],
+                travelMode: 'DRIVING',
+                unitSystem: google.maps.UnitSystem.METRIC,
+                avoidHighways: false,
+                avoidTolls: false
+            }, function(response, status) {
+                if (status !== 'OK') {
+                    alert('Error was: ' + status);
+                } else {
+                    var originList = response.originAddresses;
+                    var destinationList = response.destinationAddresses;
+
+                    for (var i = 0; i < originList.length; i++) {
+                        var results = response.rows[i].elements;
+                        for (var j = 0; j < results.length; j++) {
+                            $('#Distance').val(results[j].distance.text);
+                            var distance = parseFloat(results[j].distance.text);
+                            $('#QuantiteKerosene').val(distance*7.01/100);
+                        }
+                    }
+                }
+            });
+        });
+    }
+
+
+
+
+</script>

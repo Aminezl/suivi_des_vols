@@ -1,0 +1,90 @@
+﻿@model Suivi_des_vols.Models.Vols
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Details</title>
+</head>
+<body>
+    <div>
+        <h4>Vols</h4>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.DepartAirport)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.DepartAirport)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.DepartLatAirport)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.DepartLatAirport)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.DepartLogAirport)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.DepartLogAirport)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.DestinationAirport)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.DestinationAirport)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.DestinationtLatAirport)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.DestinationtLatAirport)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.DestinationLogAirport)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.DestinationLogAirport)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.Distance)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.Distance)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.QuantiteKerosene)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.QuantiteKerosene)
+            </dd>
+    
+        </dl>
+    </div>
+    <p>
+        @Html.ActionLink("Edit", "Edit", new { id = Model.VolId }) |
+        @Html.ActionLink("Back to List", "Index")
+    </p>
+</body>
+</html>
